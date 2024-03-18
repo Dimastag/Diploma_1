@@ -1,35 +1,39 @@
 import cv2 as cv
-import sys
 import os
 from ultralytics import YOLO
 import pyttsx3
 import threading
-
+import queue
 
 class Model:
-
-
-    def  __init__(self):
-        self.path = os.path.abspath("1.MOV")
+    def __init__(self):
+        self.path = os.path.abspath("2.MOV")
         self.model = YOLO("yolov8n_custom_9.pt")
         self.engine = pyttsx3.init()
+        self.voice_queue = queue.Queue()
 
+        # Start voice output thread
+        voice_thread = threading.Thread(target=self.voice_output_thread)
+        voice_thread.daemon = True
+        voice_thread.start()
 
     def open_video(self):
-    # Open the video file
+        # Open the video file
         video_path = self.path
         cap = cv.VideoCapture(video_path)
         return cap
-    def voice_output(self):
-        self.engine.say("Внимание впереди знак уступи дорогу")
-        self.engine.runAndWait()
 
-    def voice_recognition(self):
-        pass
+    def voice_output(self, text):
+        self.voice_queue.put(text)
 
+    def voice_output_thread(self):
+        while True:
+            text = self.voice_queue.get()
+            self.engine.say(text)
+            self.engine.runAndWait()
+            self.voice_queue.task_done()
 
     def video_processing(self):
-
         open_video = self.open_video()
         # Loop through the video frames
         while open_video.isOpened():
@@ -46,15 +50,13 @@ class Model:
                 if clss != []:
                     for i in clss:
                         sign = results[0].names.get(int(i))
-                        # if sign == "No_parking":
-                        #     threading.Thread(target=self.voice_output(), args=("Парковка запрещена, обрати внимание на знак time_plate",)).start()
                         if sign == "give_way":
-                            threading.Thread(target=self.voice_output()).start()
-                        # with open("log.txt", "a+") as f:
-                        #         f.write(sign + " , ")
+                            self.voice_output("Внимание впереди знак уступи дорогу")
+                        elif sign != "give_way":
+                            break
+
                 # Display the annotated frame
                 cv.imshow("YOLOv8 Inference", annotated_frame)
-                # self.engine.runAndWait()
                 if cv.waitKey(1) & 0xFF == ord("q"):
                     break
 
@@ -66,12 +68,6 @@ class Model:
         open_video.release()
         cv.destroyAllWindows()
 
-
-    # def sound_notification(self):
-    #     engine = pyttsx3.init()
-    #     engine.say("Привет, мир!")
-    #     engine.runAndWait()
-
-if __name__=="__main__":
+if __name__ == "__main__":
     model = Model()
     model.video_processing()
