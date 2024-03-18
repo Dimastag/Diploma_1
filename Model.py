@@ -3,14 +3,16 @@ import sys
 import os
 from ultralytics import YOLO
 import pyttsx3
+import threading
 
 
 class Model:
 
 
     def  __init__(self):
-        self.path = os.path.abspath("C:\\Users\\Dmitrii\\PycharmProjects\\Diploma_1\\interface_data\\2.MOV")
+        self.path = os.path.abspath("1.MOV")
         self.model = YOLO("yolov8n_custom_9.pt")
+        self.engine = pyttsx3.init()
 
 
     def open_video(self):
@@ -18,6 +20,13 @@ class Model:
         video_path = self.path
         cap = cv.VideoCapture(video_path)
         return cap
+    def voice_output(self):
+        self.engine.say("Внимание впереди знак уступи дорогу")
+        self.engine.runAndWait()
+
+    def voice_recognition(self):
+        pass
+
 
     def video_processing(self):
 
@@ -37,10 +46,15 @@ class Model:
                 if clss != []:
                     for i in clss:
                         sign = results[0].names.get(int(i))
-                        with open("log.txt", "a+") as f:
-                                f.write(sign + " , ")
+                        # if sign == "No_parking":
+                        #     threading.Thread(target=self.voice_output(), args=("Парковка запрещена, обрати внимание на знак time_plate",)).start()
+                        if sign == "give_way":
+                            threading.Thread(target=self.voice_output()).start()
+                        # with open("log.txt", "a+") as f:
+                        #         f.write(sign + " , ")
                 # Display the annotated frame
                 cv.imshow("YOLOv8 Inference", annotated_frame)
+                # self.engine.runAndWait()
                 if cv.waitKey(1) & 0xFF == ord("q"):
                     break
 
@@ -51,6 +65,7 @@ class Model:
         # Release the video capture object and close the display window
         open_video.release()
         cv.destroyAllWindows()
+
 
     # def sound_notification(self):
     #     engine = pyttsx3.init()
