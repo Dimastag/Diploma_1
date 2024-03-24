@@ -11,6 +11,7 @@ class Model:
         self.model = YOLO("yolov8n_custom_9.pt")
         self.engine = pyttsx3.init()
         self.signs_queue = queue.Queue()
+        self.crosswalk_detected = False
 
         signs_thread = threading.Thread(target=self.process_signs)
         signs_thread.daemon = True
@@ -23,14 +24,17 @@ class Model:
         return cap
 
     def process_signs(self):
-        # while True:
+        while  True:
             sign_text = self.signs_queue.get()
             self.voice_output(sign_text)
             self.signs_queue.task_done()
+            # if self.crosswalk_detected == False:
+            #         self.signs_queue.task_done()
 
     def voice_output(self, text):
         self.engine.say(text)
         self.engine.runAndWait()
+        self.engine.endLoop()
 
     def video_processing(self):
         open_video = self.open_video()
@@ -52,8 +56,11 @@ class Model:
                 if clss != []:
                     for i in clss:
                         sign = results[0].names.get(int(i))
+                        print(self.crosswalk_detected)
                         if sign == "crosswalk_2":
                             self.signs_queue.put("Внимание впереди пешеходный переход")
+                        if sign == "No_parking":
+                            self.signs_queue.put("Внимание парковка запрещена")
                         if sign == "give_way":
                             self.signs_queue.put("Внимание уступи дорогу")
 
@@ -70,6 +77,6 @@ class Model:
         open_video.release()
         cv.destroyAllWindows()
 
-if __name__ == "__main__":
-    model = Model()
-    model.video_processing()
+# if __name__ == "__main__":
+#     model = Model()
+#     model.video_processing()
