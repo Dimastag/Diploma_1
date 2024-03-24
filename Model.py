@@ -10,12 +10,11 @@ class Model:
         self.path = os.path.abspath("2.MOV")
         self.model = YOLO("yolov8n_custom_9.pt")
         self.engine = pyttsx3.init()
-        self.voice_queue = queue.Queue()
+        self.signs_queue = queue.Queue()
 
-        # Start voice output thread
-        voice_thread = threading.Thread(target=self.voice_output_thread)
-        voice_thread.daemon = True
-        voice_thread.start()
+        signs_thread = threading.Thread(target=self.process_signs)
+        signs_thread.daemon = True
+        signs_thread.start()
 
     def open_video(self):
         # Open the video file
@@ -23,15 +22,15 @@ class Model:
         cap = cv.VideoCapture(video_path)
         return cap
 
-    def voice_output(self, text):
-        self.voice_queue.put(text)
+    def process_signs(self):
+        # while True:
+            sign_text = self.signs_queue.get()
+            self.voice_output(sign_text)
+            self.signs_queue.task_done()
 
-    def voice_output_thread(self):
-        while True:
-            text = self.voice_queue.get()
-            self.engine.say(text)
-            self.engine.runAndWait()
-            self.voice_queue.task_done()
+    def voice_output(self, text):
+        self.engine.say(text)
+        self.engine.runAndWait()
 
     def video_processing(self):
         open_video = self.open_video()
@@ -43,17 +42,20 @@ class Model:
             if success:
                 # Run YOLOv8 inference on the frame
                 results = self.model(frame)
+
+                # Getting classes names from model
                 clss = results[0].boxes.cls.cpu().tolist()
 
                 # Visualize the results on the frame
                 annotated_frame = results[0].plot()
+
                 if clss != []:
                     for i in clss:
                         sign = results[0].names.get(int(i))
+                        if sign == "crosswalk_2":
+                            self.signs_queue.put("Внимание впереди пешеходный переход")
                         if sign == "give_way":
-                            self.voice_output("Внимание впереди знак уступи дорогу")
-                        elif sign != "give_way":
-                            break
+                            self.signs_queue.put("Внимание уступи дорогу")
 
                 # Display the annotated frame
                 cv.imshow("YOLOv8 Inference", annotated_frame)
