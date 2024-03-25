@@ -1,12 +1,12 @@
 import tkinter as tk
-from model import Model
+from model import RecordMode
 
 
 class Chooser:
     def __init__(self, root):
         self.root = root
         self.root.geometry('400x200')
-        self.model_instance = Model()
+        self.model_instance = RecordMode()
         self.root.title("Choose Mode")
         self.mode_var = tk.IntVar()
         self.mode_var.set(1)  # Значение по умолчанию

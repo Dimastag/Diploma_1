@@ -5,7 +5,7 @@ import pyttsx3
 import threading
 import queue
 
-class Model:
+class RecordMode:
     def __init__(self):
         self.path = os.path.abspath("2.MOV")
         self.model = YOLO("yolov8n_custom_9.pt")
@@ -77,7 +77,3 @@ class Model:
         # Release the video capture object and close the display window
         open_video.release()
         cv.destroyAllWindows()
-
-# if __name__ == "__main__":
-#     model = Model()
-#     model.video_processing()
