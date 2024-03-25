@@ -1,14 +1,15 @@
 import tkinter as tk
-import model
+from model import Model
 
 
 class Chooser:
     def __init__(self, root):
         self.root = root
+        self.root.geometry('400x200')
+        self.model_instance = Model()
         self.root.title("Choose Mode")
-
         self.mode_var = tk.IntVar()
-        self.mode_var.set(1)  # Устанавливаем значение по умолчанию
+        self.mode_var.set(1)  # Значение по умолчанию
 
         mode_label = tk.Label(self.root, text="Choose the mode:")
         mode_label.pack()
@@ -27,11 +28,10 @@ class Chooser:
         if selected_mode == 1:
             print("Starting Real-time Video Mode")
             #  здесь код для запуска реального времени
-            model.Model.open_video(self)
-            model.Model.video_processing(self)
         elif selected_mode == 2:
             print("Starting Record Mode")
             # здесь код для запуска записи
+            self.model_instance.video_processing()
 
 
 if __name__ == "__main__":

@@ -37,6 +37,7 @@ class Model:
         self.engine.endLoop()
 
     def video_processing(self):
+        ''' С помощью библиотеки opencv делим видео на кадры '''
         open_video = self.open_video()
         # Loop through the video frames
         while open_video.isOpened():
@@ -44,13 +45,13 @@ class Model:
             success, frame = open_video.read()
 
             if success:
-                # Run YOLOv8 inference on the frame
+                # Запуск YOLOv8 по фреймам
                 results = self.model(frame)
 
-                # Getting classes names from model
+                # Здесь получаем название классов из модели
                 clss = results[0].boxes.cls.cpu().tolist()
 
-                # Visualize the results on the frame
+                # Визуализация названий в каждом кадре
                 annotated_frame = results[0].plot()
 
                 if clss != []:
@@ -64,7 +65,7 @@ class Model:
                         if sign == "give_way":
                             self.signs_queue.put("Внимание уступи дорогу")
 
-                # Display the annotated frame
+                # Отображение в каждом кадре названий найденных объектов
                 cv.imshow("YOLOv8 Inference", annotated_frame)
                 if cv.waitKey(1) & 0xFF == ord("q"):
                     break
