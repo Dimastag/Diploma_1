@@ -26,11 +26,15 @@ class Chooser:
     def start_selected_mode(self):
         selected_mode = self.mode_var.get()
         if selected_mode == 1:
-            print("Starting Real-time Video Mode")
+
             #  здесь код для запуска реального времени
+
+            self.model_instance.real_time()
+
         elif selected_mode == 2:
-            print("Starting Record Mode")
+
             # здесь код для запуска записи
+
             self.model_instance.video_processing()
 
 
