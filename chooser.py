@@ -35,7 +35,7 @@ class Chooser:
 
             # здесь код для запуска записи
 
-            self.model_instance.video_processing()
+            self.model_instance.record_mode()
 
 
 if __name__ == "__main__":

@@ -77,7 +77,7 @@ class RecordMode:
         video_capture.release()
         cv.destroyAllWindows()
 
-    def video_processing(self):
+    def record_mode(self):
         ''' С помощью библиотеки opencv делим видео на кадры '''
         open_video = self.open_video()
         # Loop through the video frames
