@@ -24,6 +24,9 @@ class Chooser:
         start_button.pack()
 
     def start_selected_mode(self):
+        '''
+        Функция выбора режима работы модели
+        '''
         selected_mode = self.mode_var.get()
         if selected_mode == 1:
 

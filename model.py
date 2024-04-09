@@ -16,15 +16,22 @@ class RecordMode:
         self.lock = Lock()  # Создание объекта мьютекса
 
     def voice_output(self, txt):
+        '''
+        :param txt: Параметр отвечающий за текст речевого помошника
+        :return:
+        '''
         self.engine.say(txt)
         self.engine.runAndWait()
 
     def real_time(self):
-        # real_time = self.model.predict(source=0)
+        '''
+        Функция обрабатывающая видео в реальном времени с помощью библиотеки OpenCV и
+        нейросети YOLOv8
+        '''
         video_capture = cv2.VideoCapture(0)
 
         while video_capture.isOpened():
-            # Read a frame from the video
+            # Чтение кадров с видео
             success, frame = video_capture.read()
 
             if success:
@@ -36,6 +43,7 @@ class RecordMode:
 
                 annotated_frame = results[0].plot()
 
+                #Цикл где происходит срабатывание речевого помошника в зависимости от появившегося класса на экране
                 if clss != []:
                     for i in clss:
                         sign = results[0].names.get(int(i))
@@ -45,20 +53,21 @@ class RecordMode:
                         if sign == "crosswalk_2":
                             with self.lock:
                                 Thread(target=self.voice_output, args=("Внимание пешеходный переход",)).start()
+
                 # Отображение в каждом кадре названий найденных объектов
                 cv2.imshow("YOLOv8 Inference", annotated_frame)
                 if cv2.waitKey(1) & 0xFF == ord("q"):
                     break
 
-            else:
-                # Break the loop if the end of the video is reached
-                break
-
-        # Release the video capture object and close the display window
+        # Отпускает видеозахват и зыкрывает окно
         video_capture.release()
         cv2.destroyAllWindows()
 
     def record_mode(self):
+        '''
+        Функция обрабатывающая видео в режиме записи с помощью библиотеки OpenCV и
+        нейросети YOLOv8
+        '''
         cap = cv2.VideoCapture(self.path)
         while cap.isOpened():
             ret, frame = cap.read()
@@ -71,7 +80,6 @@ class RecordMode:
 
             # Визуализация названий в каждом кадре
             annotated_frame = results[0].plot()
-            # sign = self.model.detect(frame)
             if clss != []:
                 for i in clss:
                     sign = results[0].names.get(int(i))
@@ -90,6 +98,3 @@ class RecordMode:
         cv2.destroyAllWindows()
 
 
-# if __name__ == "__main__":
-#     recorder = RecordMode()
-#     recorder.record_mode()
