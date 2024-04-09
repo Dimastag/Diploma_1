@@ -16,18 +16,18 @@ class RecordMode:
         self.lock = Lock()  # Создание объекта мьютекса
 
     def voice_output(self, txt):
-        '''
+        """
         :param txt: Параметр отвечающий за текст речевого помошника
         :return:
-        '''
+        """
         self.engine.say(txt)
         self.engine.runAndWait()
 
     def real_time(self):
-        '''
+        """
         Функция обрабатывающая видео в реальном времени с помощью библиотеки OpenCV и
         нейросети YOLOv8
-        '''
+        """
         video_capture = cv2.VideoCapture(0)
 
         while video_capture.isOpened():
@@ -43,7 +43,7 @@ class RecordMode:
 
                 annotated_frame = results[0].plot()
 
-                #Цикл где происходит срабатывание речевого помошника в зависимости от появившегося класса на экране
+                # Цикл где происходит срабатывание речевого помошника в зависимости от появившегося класса на экране
                 if clss != []:
                     for i in clss:
                         sign = results[0].names.get(int(i))
@@ -64,10 +64,10 @@ class RecordMode:
         cv2.destroyAllWindows()
 
     def record_mode(self):
-        '''
+        """
         Функция обрабатывающая видео в режиме записи с помощью библиотеки OpenCV и
         нейросети YOLOv8
-        '''
+        """
         cap = cv2.VideoCapture(self.path)
         while cap.isOpened():
             ret, frame = cap.read()
@@ -96,5 +96,3 @@ class RecordMode:
 
         cap.release()
         cv2.destroyAllWindows()
-
-

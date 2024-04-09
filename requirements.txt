@@ -56,4 +56,4 @@ ultralytics==8.1.23
 urllib3==2.2.1
 winsdk==1.0.0b10
 folium==0.16.0
-
+pyttsx3~=2.90
