@@ -5,7 +5,6 @@ from folium.plugins import MousePosition
 # Import folium DivIcon plugin
 from folium.features import DivIcon
 import folium
-from folium.plugins import Realtime
 import asyncio
 import winsdk.windows.devices.geolocation as wdg
 
