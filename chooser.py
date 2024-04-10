@@ -1,5 +1,6 @@
 import tkinter as tk
 from model import RecordMode
+from threading import Thread
 
 
 class Chooser:
@@ -23,6 +24,11 @@ class Chooser:
         start_button = tk.Button(self.root, text="Start", command=self.start_selected_mode)
         start_button.pack()
 
+        exit_button = tk.Button(root, text="Exit", command=self.on_exit)
+        exit_button.pack()
+
+
+
     def start_selected_mode(self):
         '''
         Функция выбора режима работы модели
@@ -39,6 +45,10 @@ class Chooser:
             # здесь код для запуска записи
 
             self.model_instance.record_mode()
+
+    def on_exit(self):
+        RecordMode.exit_condition(self, key="q")
+        root.destroy()
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 import os
 import cv2
-import queue
 from threading import Thread, Lock
 import pyttsx3
 from ultralytics import YOLO
@@ -11,7 +10,6 @@ class RecordMode:
         self.path = os.path.abspath("2.MOV")
         self.model = YOLO("yolov8n_custom_9.pt")
         self.engine = pyttsx3.init()
-        self.signs_queue = queue.Queue()
         self.crosswalk_detected = False
         self.lock = Lock()  # Создание объекта мьютекса
 
@@ -22,6 +20,9 @@ class RecordMode:
         """
         self.engine.say(txt)
         self.engine.runAndWait()
+
+    def exit_condition(self, key):
+        return key == ord('q')
 
     def real_time(self):
         """
@@ -56,7 +57,8 @@ class RecordMode:
 
                 # Отображение в каждом кадре названий найденных объектов
                 cv2.imshow("YOLOv8 Inference", annotated_frame)
-                if cv2.waitKey(1) & 0xFF == ord("q"):
+                key = cv2.waitKey(1)
+                if self.exit_condition(key):
                     break
 
         # Отпускает видеозахват и зыкрывает окно
@@ -91,7 +93,8 @@ class RecordMode:
                             Thread(target=self.voice_output, args=("Внимание пешеходный переход",)).start()
 
             cv2.imshow("Video", annotated_frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            key = cv2.waitKey(1)
+            if self.exit_condition(key):
                 break
 
         cap.release()
