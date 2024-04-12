@@ -3,14 +3,13 @@ import cv2
 from threading import Thread, Lock
 import pyttsx3
 from ultralytics import YOLO
+from tkinter import filedialog as fd
 
-
-class RecordMode:
+class Modes:
     def __init__(self):
-        self.path = os.path.abspath("2.MOV")
-        self.model = YOLO("yolov8n_custom_9.pt")
+        # self.path = os.path.abspath("2.MOV")
+        self.model = YOLO("yolo8n_custom_12.pt")
         self.engine = pyttsx3.init()
-        self.crosswalk_detected = False
         self.lock = Lock()  # Создание объекта мьютекса
 
     def voice_output(self, txt):
@@ -70,7 +69,7 @@ class RecordMode:
         Функция обрабатывающая видео в режиме записи с помощью библиотеки OpenCV и
         нейросети YOLOv8
         """
-        cap = cv2.VideoCapture(self.path)
+        cap = cv2.VideoCapture(self.callback())
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
@@ -99,3 +98,8 @@ class RecordMode:
 
         cap.release()
         cv2.destroyAllWindows()
+
+    def callback(self):
+        path = fd.askopenfilename()
+        # Modes.way(path)
+        return path
