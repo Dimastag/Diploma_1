@@ -43,7 +43,6 @@ class Chooser:
             self.model_instance.record_mode()
 
     def on_exit(self):
-        # root = tk.Tk()
         Modes.exit_condition(self, key="q")
         root.destroy()
 
