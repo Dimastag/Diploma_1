@@ -7,7 +7,6 @@ from tkinter import filedialog as fd
 
 class Modes:
     def __init__(self):
-        # self.path = os.path.abspath("2.MOV")
         self.model = YOLO("yolo8n_custom_12.pt")
         self.engine = pyttsx3.init()
         self.lock = Lock()  # Создание объекта мьютекса
@@ -21,6 +20,7 @@ class Modes:
         self.engine.runAndWait()
 
     def exit_condition(self, key):
+
         return key == ord('q')
 
     def real_time(self):
