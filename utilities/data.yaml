@@ -3,4 +3,6 @@ val: ./valid/images
 test: ./test/images
 
 nc: 22
-names: ['No_parking', 'No_right_turn', 'Traffic_by_lanes', 'busstop', 'close_road', 'crosswalk_1', 'crosswalk_2', 'crosswalk_3', 'end_road', 'gas_station', 'give_way', 'main_road', 'one_way', 'only_directly', 'parking', 'parking_rules', 'road_narrows', 'slippery_road', 'speed_limit_40', 'time_plate', 'warning', 'way_sign']
+names: [ 'No_parking', 'No_right_turn', 'Traffic_by_lanes', 'busstop', 'close_road', 'crosswalk_1', 'crosswalk_2',
+         'crosswalk_3', 'end_road', 'gas_station', 'give_way', 'main_road', 'one_way', 'only_directly', 'parking',
+         'parking_rules', 'road_narrows', 'slippery_road', 'speed_limit_40', 'time_plate', 'warning',   'way_sign' ]
